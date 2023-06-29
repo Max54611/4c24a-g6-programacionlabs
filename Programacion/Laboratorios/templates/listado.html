@@ -69,8 +69,8 @@
                     <td>{{ d.fecha }}</td>
                     <td>{{ d.hora_inicio }}</td>
                     <td>{{ d.hora_fin }}</td>
-                    <td><a href="#" class="btn btn-info">Editar</a></td>
-                    <td><a href="#" class="btn btn-danger">Eliminar</a></td>
+                    <td><a href="editar/{{d.id}}" class="btn btn-info">Editar</a></td>
+                    <td><a href="eliminar/{{d.id}}" class="btn btn-danger">Eliminar</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
