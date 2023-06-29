@@ -51,6 +51,5 @@ class Programacion_laboratorio(models.Model):
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
 
-    def __str__(self):
-        return self.laboratorio.nombre + " " + self.curso_dictado.curso.nombre + " " + self.fecha + " " + self.hora_inicio + " " + self.hora_fin
+
     

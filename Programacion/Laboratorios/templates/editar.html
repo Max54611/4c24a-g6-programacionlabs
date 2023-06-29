@@ -1,0 +1,51 @@
+{% extends './base.html' %}
+
+{% block title %}Gestión de Cursos{% endblock %}
+
+{% block body %}
+
+<div class="row">
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <h2>Edicion</h2>
+        <div class="card">
+            <div class="card-body">
+                <form action="/edicion" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="txtlaboratorio" class="form-label">Laboratorio:</label>
+                        <select name="txtlaboratorio" class="form-select" id="txtlaboratorio">
+                            {% for laboratorio in laboratorios %}
+                                <option value="{{ laboratorio.id }}">{{ laboratorio.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="txtcurso_dictado" class="form-label">Curso Dictado:</label>
+                        <select name="txtcurso_dictado" class="form-select" id="txtcurso_dictado">
+                            {% for curso_dictado in cursos_dictados %}
+                                <option value="{{ curso_dictado.id }}">{{ curso_dictado.curso.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="txtfecha" class="form-label">Fecha:</label>
+                        <input type="date" name="txtfecha" class="form-control" id="txtfecha" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="txthora_inicio" class="form-label">Hora de Inicio:</label>
+                        <input type="time" name="txthora_inicio" class="form-control" id="txthora_inicio" value="{{programacion_laboratorio.hora_inicio}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="txthora_fin" class="form-label">Hora de Fin:</label>
+                        <input type="time" name="txthora_fin" class="form-control" id="txthora_fin" value="{{programacion_laboratorio.hora_fin}}">>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
