@@ -54,7 +54,8 @@ def logout_view(request):
 #PROGRAMACION LABORATORIOS
 
 def index(request):
-    listadoProgLabs = Programacion_laboratorio.objects.all()
+    # Recoger los ultimos 5 laboratorios programados
+    listadoProgLabs = Programacion_laboratorio.objects.all().order_by('-id')
     laboratorios = Laboratorio.objects.all()
     cursos_dictados = Curso_dictado.objects.all()
     if request.method == 'POST':
@@ -73,17 +74,26 @@ def index(request):
             Q(laboratorio=laboratorio) &
             (Q(fecha__range=(fecha_inicio, fecha_fin)))).order_by('fecha')
         
+        dias_semana = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+        # Cambiar el formato de la fecha a dia (Monday, Tuesday, etc.)
+        for programacion in programaciones:
+            programacion.fecha = programacion.fecha.strftime('%A')
+
+        # Obtener el nombre del laboratorio seleccionado
+        laboratorio = Laboratorio.objects.get(id=laboratorio)
+        
         context = {
             "labs": listadoProgLabs,
             "laboratorios": laboratorios,
             "cursos_dictados": cursos_dictados,
             "programaciones": programaciones,
             "laboratorio": laboratorio,
-            "semana": semana
+            "semana": semana,
+            "dias_semana": dias_semana
         }
         return render(request, 'index.html', context)
     else:
-        
         context = {
             "labs": listadoProgLabs,
             "laboratorios": laboratorios,
