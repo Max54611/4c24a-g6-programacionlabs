@@ -4,6 +4,13 @@
 
 {% block body %}
 
+<div class="d-flex justify-content-end fixed-bottom bg-light p-3">
+  <div class="p-2">
+    <p>Clima: {{ temperatura|floatformat:"0.2f" }}°C - {{ descripcion }}</p>
+    <p>Fecha y Hora actual: {{ fecha_hora_actual }}</p>
+  </div>
+</div>
+
 {% if messages %}
   {% for message in messages %}
     {% if message.tags == 'success' %}

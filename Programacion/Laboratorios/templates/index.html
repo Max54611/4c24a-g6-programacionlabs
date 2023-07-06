@@ -29,27 +29,23 @@
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#">Inicio</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Cursos</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Nosotros</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Contacto</a>
-                </li>
-                <li class="nav-item">
                   <a class="nav-link" href="{% url 'Laboratorios:login' %}">
                     Login</a>
                 </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'Laboratorios:pdf' %}">
+                    Generar Reporte</a>
+                </li>
               </ul>
+              {% if user.is_authenticated %}
+                <a class="nav-link" href="{% url 'Laboratorios:logout_view' %}">
+                  Logout</a>
+              {% endif %}
             </div>
         </nav>
 
         <!--Listado de horarios de los laboratorios-->
-        <div class="row">
+        <div class="row, tabla-horarios">
           <div class="col-12">
             <h1 class="text-center">Horarios de los laboratorios</h1>
           </div>
@@ -80,5 +76,31 @@
                 </div>
             </div>
         </div>
+
+        <!-- Desplegable que se muestra al seleccionar un laboratorio y una semana que vendria a ser el calendario de un rango de fechas -->
+        <form method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="laboratorio">Laboratorio:</label>
+            <select class="form-control" id="laboratorio" name="laboratorio">
+              {% for laboratorio in laboratorios %}
+                <option value="{{ laboratorio.id }}">{{ laboratorio.nombre }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="semana">Semana:</label>
+            <input type="week" class="form-control" id="semana" name="semana">
+          </div>
+          <button type="submit" class="btn btn-primary">Consultar</button>
+        </form>
+        {% if programaciones %}
+          <h2>Programaciones para el laboratorio {{ laboratorio }} en la semana {{ semana }}</h2>
+          <ul>
+            {% for programacion in programaciones %}
+              <li>{{ programacion.fecha }} - {{ programacion.curso_dictado }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
     </div>
 </body>
