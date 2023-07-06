@@ -58,6 +58,7 @@ def index(request):
     listadoProgLabs = Programacion_laboratorio.objects.all().order_by('-id')
     laboratorios = Laboratorio.objects.all()
     cursos_dictados = Curso_dictado.objects.all()
+    temperatura, descripcion, fecha_hora_actual = obtener_datos_clima()
     if request.method == 'POST':
         # Obtener los datos del formulario
         laboratorio = request.POST.get('laboratorio')
@@ -90,14 +91,20 @@ def index(request):
             "programaciones": programaciones,
             "laboratorio": laboratorio,
             "semana": semana,
-            "dias_semana": dias_semana
+            "dias_semana": dias_semana,
+            "temperatura": temperatura,
+            "descripcion": descripcion,
+            "fecha_hora_actual": fecha_hora_actual
         }
         return render(request, 'index.html', context)
     else:
         context = {
             "labs": listadoProgLabs,
             "laboratorios": laboratorios,
-            "cursos_dictados": cursos_dictados
+            "cursos_dictados": cursos_dictados,
+            "temperatura": temperatura,
+            "descripcion": descripcion,
+            "fecha_hora_actual": fecha_hora_actual
         }
         return render(request, "index.html", context)
 
