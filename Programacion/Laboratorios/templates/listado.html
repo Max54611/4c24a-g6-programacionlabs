@@ -95,8 +95,8 @@
                 <td>{{ d.hora_inicio }}</td>
                 <td>{{ d.hora_fin }}</td>
                 <td>
-                  <a href="editar/{{d.id}}" class="btn btn-outline-primary btn-sm mr-2">Editar</a>
-                  <a href="eliminar/{{d.id}}" class="btn btn-outline-danger btn-sm">Eliminar</a>
+                  <a href="{% url 'Laboratorios:editar' d.id %}" class="btn btn-outline-primary btn-sm">Editar</a>
+                  <a href="{% url 'Laboratorios:eliminar' d.id %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
                 </td>
               </tr>
               {% endfor %}

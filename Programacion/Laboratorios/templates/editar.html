@@ -52,6 +52,38 @@
             </div>
         </div>
     </div>
+    <div class="col-sm-12 col-md-6 col-lg-8 col-xl-8">
+        <h2>Horario:</h2>
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered">
+            <thead class="table-primary">
+              <tr>
+                <th>Laboratorio</th>
+                <th>Curso Dictado</th>
+                <th>Fecha</th>
+                <th>Hora de Inicio</th>
+                <th>Hora de Fin</th>
+                <th>Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for d in labs %}
+              <tr>
+                <td>{{ d.laboratorio }}</td>
+                <td>{{ d.curso_dictado }}</td>
+                <td>{{ d.fecha }}</td>
+                <td>{{ d.hora_inicio }}</td>
+                <td>{{ d.hora_fin }}</td>
+                <td>
+                  <a href="{% url 'Laboratorios:editar' d.id %}" class="btn btn-outline-primary btn-sm">Editar</a>
+                  <a href="{% url 'Laboratorios:eliminar' d.id %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
 </div>
 
 {% endblock %}
