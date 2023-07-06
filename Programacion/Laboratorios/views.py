@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import *
 from django.db.models import Q
+from django.db import IntegrityError
+from django.contrib import messages
 
 # Create your views here.
 
@@ -13,6 +15,7 @@ def progLab(request):
     cursos_dictados = Curso_dictado.objects.all()
     return render(request, "listado.html", {"labs": listadoProgLabs, "laboratorios": laboratorios, "cursos_dictados": cursos_dictados})
 
+#No se permite registrar un laboratorio en una fecha y hora que ya se encuentre registrado o en el mismo rango de horas
 def registrar(request):
     laboratorio_id = request.POST["txtlaboratorio"]
     curso_dictado_id = request.POST["txtcurso_dictado"]
@@ -23,7 +26,19 @@ def registrar(request):
     laboratorio = Laboratorio.objects.get(id=laboratorio_id)
     curso_dictado = Curso_dictado.objects.get(id=curso_dictado_id)
 
-    lab_programado = Programacion_laboratorio.objects.create(laboratorio=laboratorio, curso_dictado=curso_dictado, fecha=fecha, hora_inicio=hora_inicio, hora_fin=hora_fin)
+    if Programacion_laboratorio.objects.filter(
+        Q(laboratorio=laboratorio) &
+        (Q(fecha=fecha) & (Q(hora_inicio__range=(hora_inicio, hora_fin)) | Q(hora_fin__range=(hora_inicio, hora_fin))))).exists():
+        messages.error(request, "Ya existe una programación para el laboratorio en el rango de fechas y horas especificado.")
+    else:
+        lab_programado = Programacion_laboratorio(
+        laboratorio=laboratorio,
+        curso_dictado=curso_dictado,
+        fecha=fecha,
+        hora_inicio=hora_inicio,
+        hora_fin=hora_fin)
+        lab_programado.save()
+        messages.success(request, "Programación de laboratorio registrada correctamente.")
     return redirect('/listado')
 
 def editar_datos(request,id):
@@ -41,7 +56,6 @@ def editar_datos(request,id):
         'datos':datos,
         'laboratorio':laboratorio,
         'laboratorios':laboratorioListado,
-
         'curso_dictado':curso_dictado,
         'cursos':cursoListado
     }
@@ -58,16 +72,23 @@ def editar(request):
     laboratorio = Laboratorio.objects.get(id=laboratorio_id)
     curso_dictado = Curso_dictado.objects.get(id=curso_dictado_id)
 
-    lab_programado = Programacion_laboratorio.objects.filter(id=id).update(laboratorio=laboratorio, curso_dictado=curso_dictado, fecha=fecha, hora_inicio=hora_inicio, hora_fin=hora_fin)
+    if Programacion_laboratorio.objects.filter(
+        Q(laboratorio=laboratorio) &
+        (Q(fecha=fecha) & (Q(hora_inicio__range=(hora_inicio, hora_fin)) | Q(hora_fin__range=(hora_inicio, hora_fin))))).exclude(id=id).exists():
+        messages.error(request, "Ya existe una programación para el laboratorio en el rango de fechas y horas especificado.")
+    else:
+        program = Programacion_laboratorio.objects.get(id=id)
+        program.laboratorio = laboratorio
+        program.curso_dictado = curso_dictado
+        program.fecha = fecha
+        program.hora_inicio = hora_inicio
+        program.hora_fin = hora_fin
+        program.save()
+        messages.success(request, "Programación de laboratorio editada correctamente.")
+    
     return redirect('/listado')
 
 def eliminar(request,id):
     program=Programacion_laboratorio.objects.get(id=id)
     program.delete()
     return redirect('/listado')
-
-
-
-
-
-
